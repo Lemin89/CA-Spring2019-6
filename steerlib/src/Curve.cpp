@@ -10,9 +10,11 @@
 #include <util/Curve.h>
 #include <util/Color.h>
 #include <util/DrawLib.h>
+#include <iostream>
 #include "Globals.h"
 
 using namespace Util;
+using namespace std;
 
 Curve::Curve(const CurvePoint& startPoint, int curveType) : type(curveType)
 {
@@ -45,15 +47,61 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
+	Point startPoint = controlPoints.at(0).position;
+	Point endPoint = controlPoints.at(0).position;
+	int nextPoint = 0;
+	float normalTime, intervalTime;
+	float f1, f2, f3, f4;
 
+	if (type == hermiteCurve)
+	{
+		//cout << "***hermiteCurve" << endl;
+		for (int i = window; i <= controlPoints.at(controlPoints.size() - 1).time; i = i + window) {
+			startPoint = endPoint;
+			if (i > controlPoints.at(nextPoint).time)
+				nextPoint++;
+			if (i == window) {
+				nextPoint = 1;
+			}
+			intervalTime = controlPoints.at(nextPoint).time - controlPoints.at(nextPoint - 1).time;
+			normalTime = (i - controlPoints.at(nextPoint - 1).time) / intervalTime;
+
+			f1 = 2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1;
+			f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
+			f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
+			f4 = pow(normalTime, 3) - pow(normalTime, 2);
+
+			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+			Util::DrawLib::drawLine(startPoint, endPoint, curveColor, curveThickness);
+		}
+	}else if (type == catmullCurve) 
+	{
+		//cout << "***catmullCurve" << endl;
+		for (int i = 1; i < controlPoints.size() - 1;i++) {
+			controlPoints.at(i).tangent = (controlPoints.at(i + 1).position - controlPoints.at(i - 1).position) / 2;
+		}
+		for (int i = window; i <= controlPoints.at(controlPoints.size() - 1).time; i = i + window) {
+			startPoint = endPoint;
+			if (i > controlPoints.at(nextPoint).time)
+				nextPoint++;
+			if (i == window) {
+				nextPoint = 1;
+			}
+			if (nextPoint == controlPoints.size()) {
+				nextPoint = controlPoints.size() - 1;
+			}
+			intervalTime = controlPoints.at(nextPoint).time - controlPoints.at(nextPoint - 1).time;
+			normalTime = (i - controlPoints.at(nextPoint - 1).time) / intervalTime;
+
+			f1 = 2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1;
+			f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
+			f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
+			f4 = pow(normalTime, 3) - pow(normalTime, 2);
+
+			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+			Util::DrawLib::drawLine(startPoint, endPoint, curveColor, curveThickness);
+		}
+	}
 	// Robustness: make sure there is at least two control point: start and end points
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
 	// Note that you must draw the whole curve at each frame, that means connecting line segments between each two points on the curve
@@ -64,16 +112,16 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 // Sort controlPoints vector in ascending order: min-first
 void Curve::sortControlPoints()
-{
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function sortControlPoints is not implemented!" << std::endl;
-		flag = true;
+{	
+	for (int a = 0; a < controlPoints.size(); a = a + 1) {
+		for (int b = a + 1; b < controlPoints.size(); b = b + 1) {
+			if (controlPoints.at(a).time > controlPoints.at(b).time) {
+				CurvePoint temp1 = controlPoints.at(a);
+				controlPoints.at(a) = controlPoints.at(b);
+				controlPoints.at(b) = temp1;
+			}
+		}
 	}
-	//=========================================================================
-
 	return;
 }
 
@@ -110,33 +158,23 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // Check Roboustness
 bool Curve::checkRobust()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function checkRobust is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
-
+	if (controlPoints.size() < 2)
+		return false;
 	return true;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
-{
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function findTimeInterval is not implemented!" << std::endl;
-		flag = true;
+{	
+	nextPoint = 0;
+	for (int i = 0; i < controlPoints.size();i++) {
+		if (time >= controlPoints.at(nextPoint).time)
+			nextPoint++;
 	}
-	//=========================================================================
-
-
-	return true;
+	if (nextPoint >= 0 && nextPoint < controlPoints.size() && controlPoints.at(nextPoint).time > time) {
+		return true;
+	}
+	return false;
 }
 
 // Implement Hermite curve
@@ -144,38 +182,31 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
 	float normalTime, intervalTime;
-
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useHermiteCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
-	// Calculate position at t = time on Hermite curve
-
-	// Return result
+	intervalTime = controlPoints.at(nextPoint).time - controlPoints.at(nextPoint - 1).time;
+	normalTime = (time - controlPoints.at(nextPoint - 1).time) / intervalTime;
+	float f1 = 2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1;
+	float f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
+	float f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
+	float f4 = pow(normalTime, 3) - pow(normalTime, 2);
+	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
 	return newPosition;
 }
 
 // Implement Catmull-Rom curve
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
-
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useCatmullCurve is not implemented!" << std::endl;
-		flag = true;
+	//update tangent of control points
+	if (nextPoint>0&& nextPoint<controlPoints.size()-1) {
+		controlPoints.at(nextPoint).tangent = (controlPoints.at(nextPoint + 1).position - controlPoints.at(nextPoint - 1).position) / 2;
 	}
-	//=========================================================================
-
-	// Calculate position at t = time on Catmull-Rom curve
-	
-	// Return result
+	Point newPosition;
+	float normalTime, intervalTime;
+	intervalTime = controlPoints.at(nextPoint).time - controlPoints.at(nextPoint - 1).time;
+	normalTime = (time - controlPoints.at(nextPoint - 1).time) / intervalTime;
+	float f1 = 2*pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1;
+	float f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
+	float f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
+	float f4 = pow(normalTime, 3) - pow(normalTime, 2);
+	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
 	return newPosition;
 }
