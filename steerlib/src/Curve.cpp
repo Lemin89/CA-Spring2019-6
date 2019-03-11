@@ -71,7 +71,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 			f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
 			f4 = pow(normalTime, 3) - pow(normalTime, 2);
 
-			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent*intervalTime + f4*controlPoints.at(nextPoint).tangent*intervalTime);
 			Util::DrawLib::drawLine(startPoint, endPoint, curveColor, curveThickness);
 		}
 	}else if (type == catmullCurve) 
@@ -98,7 +98,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 			f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
 			f4 = pow(normalTime, 3) - pow(normalTime, 2);
 
-			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+			endPoint = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent*intervalTime + f4*controlPoints.at(nextPoint).tangent*intervalTime);
 			Util::DrawLib::drawLine(startPoint, endPoint, curveColor, curveThickness);
 		}
 	}
@@ -188,7 +188,7 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
 	float f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
 	float f4 = pow(normalTime, 3) - pow(normalTime, 2);
-	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent*intervalTime + f4*controlPoints.at(nextPoint).tangent*intervalTime);
 	return newPosition;
 }
 
@@ -207,6 +207,6 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	float f2 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
 	float f3 = pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime;
 	float f4 = pow(normalTime, 3) - pow(normalTime, 2);
-	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent + f4*controlPoints.at(nextPoint).tangent);
+	newPosition = Point(f1*controlPoints.at(nextPoint - 1).position + f2*controlPoints.at(nextPoint).position + f3*controlPoints.at(nextPoint - 1).tangent*intervalTime + f4*controlPoints.at(nextPoint).tangent*intervalTime);
 	return newPosition;
 }
