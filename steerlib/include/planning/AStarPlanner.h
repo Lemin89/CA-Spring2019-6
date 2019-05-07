@@ -94,13 +94,59 @@ namespace SteerLib
 				_gSpatialDatabase : The pointer to the GridDatabase2D from the agent
 				append_to_path : An optional argument to append to agent_path instead of overwriting it.
 			*/
+			bool computePath(std::vector<Util::Point>& agent_path, Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, bool append_to_path = true);
+			
+			struct epsilonComparator
+			{
+				bool operator()(Util::Point a, Util::Point b) const
+				{
+					if (distanceBetween(a, b) < 0.001) {
+						return false;
+					}
+					if (a.x == b.x)
+					{
+						return a.z < b.z;
+					}
+					else
+					{
+						return a.x < b.x;
+					}
+				}
+			};
 
-			bool computePath(std::vector<Util::Point>& agent_path, Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, bool append_to_path = false);
+			struct NodeComparator
+			{
+				bool operator()(SteerLib::AStarPlannerNode a, SteerLib::AStarPlannerNode b) const
+				{
+					if (abs(distanceBetween(a.point, b.point)) < 0.001) {
+						return false;
+					}
+					if (a.point.x == b.point.x)
+					{
+						return a.point.z < b.point.z;
+					}
+					else
+					{
+						return a.point.x < b.point.x;
+					}
+				}
+			};
+
+			std::vector<Util::Point> AStarPath(Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, float WEIGHT, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& InConsistSet, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap);
+			std::vector<Util::Point> ARAStarPath(Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& InConsistSet, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap);
+			std::vector<Util::Point> ImprovePath(Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, float WEIGHT, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& InConsistSet, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap);
+			void AddAraNode(Util::Point CurrentPoint, double cost, SteerLib::AStarPlannerNode FromNode, Util::Point goal, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& InconsSet, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap, float WEIGHT);
+
+			int getIndexFromPoint(Util::Point p);
+			std::vector<Util::Point> GetNeighborPoints(Util::Point OriginPoint);
+			void NeighborNodes(Util::Point OriginPoint, Util::Point goal, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& InConsistSet, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap, float WEIGHT);
+			void AddNode(Util::Point CurrentPoint, double cost, SteerLib::AStarPlannerNode FromNode, Util::Point goal, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& OpenSet, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap, float WEIGHT);
+			double Manhattan(Util::Point FirstPoint, Util::Point SecondPoint);
+			double Heuristic(Util::Point a, Util::Point b, float WEIGHT);
+	
 		private:
 			SteerLib::SpatialDataBaseInterface * gSpatialDatabase;
 	};
-
-
 }
 
 

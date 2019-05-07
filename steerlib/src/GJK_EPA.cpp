@@ -93,7 +93,7 @@ B:
     			v0.z = k2 * v0.x;
             }
 			min = Util::dot(v0, minkowskiDiff[0]);
-			for (unsigned i = 1; i < minkowskiDiff.size(); ++i){
+			for (unsigned i = 0; i < minkowskiDiff.size(); ++i){
 				tmp = Util::dot(v0, minkowskiDiff[i]);
 				if (tmp < min) {
 					min = tmp;

@@ -92,6 +92,11 @@ namespace SocialForcesGlobals {
 }
 
 
+enum ForceType {
+	GROWING_SPIRAL,
+	WALL_FOLLOWER
+};
+
 class SocialForcesParameters
 {
 public:

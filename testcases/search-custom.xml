@@ -1,0 +1,130 @@
+<!--
+  Copyright (c) 2009 Shawn Singh, Mubbasir Kapadia, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+-->
+
+<SteerBenchTestCase xmlns="http://www.magix.ucla.edu/steerbench"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.magix.ucla.edu/steerbench 
+                                        TestCaseSchema.xsd">
+
+  <header>
+    <version>1.0</version>
+    <name>simple-3</name>
+    <worldBounds>
+      <xmin>-100</xmin>
+      <xmax>100</xmax>
+      <ymin>0</ymin>
+      <ymax>0</ymax>
+      <zmin>-100</zmin>
+      <zmax>100</zmax>
+    </worldBounds>
+  </header>
+
+  <suggestedCameraView>
+    <position> <x>0</x> <y>35</y> <z>-10</z> </position>
+    <lookat> <x>0</x> <y>0</y> <z>0</z> </lookat>
+    <up> <x>0</x> <y>1</y> <z>0</z> </up>
+    <fovy>45</fovy>
+  </suggestedCameraView>
+
+  <obstacle>
+    <xmin>-3</xmin>
+    <xmax>15</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-3</zmin>
+    <zmax>-2</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>-3</xmin>
+    <xmax>15</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>12</zmin>
+    <zmax>13</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>-3</xmin>
+    <xmax>-2</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-2</zmin>
+    <zmax>13</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>14</xmin>
+    <xmax>15</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>1</zmin>
+    <zmax>12</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>9</xmin>
+    <xmax>10</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-2</zmin>
+    <zmax>9</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>5</xmin>
+    <xmax>6</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>9</zmin>
+    <zmax>12</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>2</xmin>
+    <xmax>9</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>5</zmin>
+    <zmax>6</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>1</xmin>
+    <xmax>2</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>1</zmin>
+    <zmax>9</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>2</xmin>
+    <xmax>6</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>1</zmin>
+    <zmax>2</zmax>
+  </obstacle>
+
+  <agent>
+    <name>A</name>
+    <initialConditions>
+      <radius>0.3</radius>
+      <position> <x>-0.5</x> <y>0</y> <z>10</z> </position>
+      <direction> <x>0</x> <y>0</y> <z>1</z> </direction>
+      <speed>1.3</speed>
+    </initialConditions>
+    <goalSequence>
+      <seekStaticTarget>
+        <targetLocation> <x>16</x> <y>0</y> <z>0</z> </targetLocation>
+        <desiredSpeed>1.3</desiredSpeed>
+        <timeDuration>10000.0</timeDuration>
+      </seekStaticTarget>
+    </goalSequence>
+
+  </agent>
+
+</SteerBenchTestCase>

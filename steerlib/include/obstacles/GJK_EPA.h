@@ -131,7 +131,7 @@ namespace SteerLib
 		static bool intersect(float& return_penetration_depth, Util::Vector& return_penetration_vector, const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
 
 	private:
-
+		static bool pointTriangle(std::vector<Util::Vector> triangle, Util::Vector point);
 	}; // class GJK_EPA
 
 } // namespace SteerLib

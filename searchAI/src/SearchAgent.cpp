@@ -15,7 +15,7 @@
 #define MAX_SPEED 0.13f
 #define AGENT_MASS 1.0f
 #define GOAL_REGION 0.1f
-#define DURATION 15
+#define DURATION 0.5f
 
 SearchAgent::SearchAgent()
 {
@@ -106,9 +106,9 @@ void SearchAgent::computePlan()
 				goal_path_pt.targetLocation = __path[i];
 				_goalQueue.push(goal_path_pt);
 			}
-			SteerLib::AgentGoalInfo goal_path_pt;
-			goal_path_pt.targetLocation = global_goal;
-			_goalQueue.push(goal_path_pt);
+			// SteerLib::AgentGoalInfo goal_path_pt;
+			// goal_path_pt.targetLocation = global_goal;
+			// _goalQueue.push(goal_path_pt);
 		}
 		// else
 		// {

@@ -61,7 +61,7 @@
             If you are having problems using SteerSuite, some troubleshooting tips are listed in <xref linkend="troubleshooting-tips" />.
           </listitem>
           <listitem>
-            Chapters 4 and 5 are currently incomplete, but the <ulink url="http://www.magix.ucla.edu/steersuite/CodeReference">Code Reference</ulink>
+            Chapters 4 and 5 are currently incomplete, but the <ulink url="http://www.magix.ucla.edu/steersuite/codereference">Code Reference</ulink>
             is fairly complete (including full descriptions and cross references), and is an ideal place to learn more about a specific feature in SteerLib.
           </listitem>
         </itemizedlist>
