@@ -334,33 +334,44 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// 	// if the distance between this and tmp_agent is going to decrease in the next timestep
 			// 	if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
 			// 		// agents are_heading towards each other and are getting closer
-			// 		away = away + normalize(cross(up, forward()))/40;
+			// 		away = away - normalize(cross(up, forward()))/20;
 			// 	}
 			// 	// if ((position()-tmp_agent->position()).length() < 3.0f) {
 			// 	// 	away -= 0.2f*velocity();
 			// 	// }
 			// }
-			int dst = position().vector().lengthSquared() + 40;
-			// if (dst < 40)
-			// 	dst = 40;
-			if (id() == 0) {
-				away += cross(up, forward())/dst;
+			float dst = position().vector().lengthSquared() + 40;
+			if (dst < 40)
+				dst = 40;
+			if (id() == 2) {
+				away -= cross(up, forward())/dst;
 			}
-			else if (id() == 2 && tmp_agent->id() == 0) {
+			else if (id() == 0 && tmp_agent->id() == 2) {
 				away += normalize(tmp_agent->position() - position())/100;
 				// if (elapsed < 20) {
 					away -= 0.03f*forward();
-					away += cross(up, tmp_agent->forward())/dst;
+					away -= 1.2f*cross(up, tmp_agent->forward())/dst;
 				// }
 			}
-			if (id() == 3) {
-				away += cross(up, forward())/dst;
+			if (id() == 1) {
+				if (elapsed < 32){
+					away -= 1.5f*cross(up, Util::Vector(-1, 0, 0))/dst;
+				}
+				if (elapsed < 36){
+					away -= 0.03f * forward();
+				}
+				else{
+					if (elapsed > 36 && elapsed < 39){
+						printf("T\n");
+						away += cross(up, Util::Vector(-1, 0, 0))/dst;
+					}
+				}
 			}
 			else if (id() == 1 && tmp_agent->id() == 3) {
 				away += normalize(tmp_agent->position() - position())/100;
 				// if (elapsed < 30) {
 					away -= 0.03f*forward();
-					away += cross(up, tmp_agent->forward())/dst;
+					away -= cross(up, tmp_agent->forward())/dst;
 				// }
 			}
 			// if ( (position() - tmp_agent->position()).length() < 1.5f ) {
@@ -583,6 +594,7 @@ Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 					) * tangent * tanget_v_diff
 
 				);
+				printf("collision\n");
 			}
 			else {
 				/* If a head on collision is about to happen, but hasn't happened, apply a force that pushes you to the left */
