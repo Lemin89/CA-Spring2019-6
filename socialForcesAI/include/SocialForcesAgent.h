@@ -65,6 +65,7 @@ public:
 	static Util::Point evade;
 	static Util::Point pursue;
 	static bool pursueIsLive;
+	static float elapsed;
 
 protected:
 	/// Updates position, velocity, and orientation of the agent, given the force and dt time step.

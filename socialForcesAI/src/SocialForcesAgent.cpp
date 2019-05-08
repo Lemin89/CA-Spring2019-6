@@ -30,6 +30,8 @@ using namespace SteerLib;
 Point SocialForcesAgent::evade = Point(0, 0, 0);
 Point SocialForcesAgent::pursue = Point(0, 0, 0);
 bool SocialForcesAgent::pursueIsLive = true;
+float SocialForcesAgent::elapsed = 0;
+Util::Vector up(0, 1, 0);
 
 	// Select 
 	// only 
@@ -326,6 +328,15 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 
 
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
+			// if (elapsed > 400*dt && elapsed < 600*dt)
+			// 	away = away + cross(up, forward())/50;
+			if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.2f) {
+				// if the distance between this and tmp_agent is going to decrease in the next timestep
+				if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
+					// agents are_heading towards each other and are getting closer
+					away = away + normalize(cross(up, forward()))/50;
+				}
+			}
 			away = away +
 					(
 						away_tmp
@@ -511,39 +522,45 @@ Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 		{
 			continue;
 		}
-		if ( ( id() != tmp_agent->id() ) && (tmp_agent->computePenetration(this->position(), this->radius()) > 0.000001) )
-		{
-			agent_repulsion_force = agent_repulsion_force +
-				( tmp_agent->computePenetration(this->position(), this->radius()) * _SocialForcesParams.sf_agent_body_force * dt) *
-				normalize(position() - tmp_agent->position());
-			// normalized tangential force
-			/*
+		if (id() != tmp_agent->id()) {
+			if (tmp_agent->computePenetration(this->position(), this->radius()) > 0.000001) {
 				agent_repulsion_force = agent_repulsion_force +
+					( tmp_agent->computePenetration(this->position(), this->radius()) * _SocialForcesParams.sf_agent_body_force * dt) *
+					normalize(position() - tmp_agent->position());
+				// normalized tangential force
+				/*
+					agent_repulsion_force = agent_repulsion_force +
+						(
+							(
+								(-1*position()) - tmp_agent->position()
+							)
+							/
+							(
+								(-1*position()) - tmp_agent->position()
+							).length()
+
+						)*0.2;
+						*/
+				//TODO this can have some funny behaviour is velocity == 0
+				Util::Vector tangent = cross(cross(tmp_agent->position() - position(), velocity()),
+						tmp_agent->position() - position());
+				tangent = tangent /  tangent.length();
+				float  tanget_v_diff = dot(tmp_agent->velocity() - velocity(),  tangent);
+				// std::cout << "Velocity diff is " << tanget_v_diff << " tangent is " << tangent <<
+				// 	" velocity is " << velocity() << " position is " << position() << 
+				// 	". Other:" << " velocity is " << tmp_agent->velocity() << " position is " << tmp_agent->position() <<  std::endl;
+				agent_repulsion_force = agent_repulsion_force +
+				(_SocialForcesParams.sf_sliding_friction_force * dt *
 					(
-						(
-							(-1*position()) - tmp_agent->position()
-						)
-						/
-						(
-							(-1*position()) - tmp_agent->position()
-						).length()
+						tmp_agent->computePenetration(this->position(), this->radius())
+					) * tangent * tanget_v_diff
 
-					)*0.2;
-					*/
-			//TODO this can have some funny behaviour is velocity == 0
-			Util::Vector tangent = cross(cross(tmp_agent->position() - position(), velocity()),
-					tmp_agent->position() - position());
-			tangent = tangent /  tangent.length();
-			float  tanget_v_diff = dot(tmp_agent->velocity() - velocity(),  tangent);
-			// std::cout << "Velocity diff is " << tanget_v_diff << " tangent is " << tangent <<
-				//	" velocity is " << velocity() << std::endl;
-			agent_repulsion_force = agent_repulsion_force +
-			(_SocialForcesParams.sf_sliding_friction_force * dt *
-				(
-					tmp_agent->computePenetration(this->position(), this->radius())
-				) * tangent * tanget_v_diff
+				);
+			}
+			else {
+				/* If a head on collision is about to happen, but hasn't happened, apply a force that pushes you to the left */
 
-			);
+			}
 		}
 
 	}
@@ -832,6 +849,7 @@ void SocialForcesAgent::computeNeighbors()
 
 void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 {
+	elapsed += dt;
 	// std::cout << id() << ": update" << std::endl;
 	// std::cout << "_SocialForcesParams.rvo_max_speed " << _SocialForcesParams._SocialForcesParams.rvo_max_speed << std::endl;
 	Util::AutomaticFunctionProfiler profileThisFunction( &SocialForcesGlobals::gPhaseProfilers->aiProfiler );
