@@ -330,44 +330,71 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
 			// if (elapsed > 400*dt && elapsed < 600*dt)
 			// 	away = away + cross(up, forward())/50;
-			if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.2f) {
-				// if the distance between this and tmp_agent is going to decrease in the next timestep
-				if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
-					// agents are_heading towards each other and are getting closer
-					away = away + normalize(cross(up, forward()))/50;
-				}
+			// if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.2f) {
+			// 	// if the distance between this and tmp_agent is going to decrease in the next timestep
+			// 	if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
+			// 		// agents are_heading towards each other and are getting closer
+			// 		away = away + normalize(cross(up, forward()))/40;
+			// 	}
+			// 	// if ((position()-tmp_agent->position()).length() < 3.0f) {
+			// 	// 	away -= 0.2f*velocity();
+			// 	// }
+			// }
+			int dst = position().vector().lengthSquared() + 40;
+			// if (dst < 40)
+			// 	dst = 40;
+			if (id() == 0) {
+				away += cross(up, forward())/dst;
 			}
-			away = away +
-					(
-						away_tmp
-						*
+			else if (id() == 2 && tmp_agent->id() == 0) {
+				away += normalize(tmp_agent->position() - position())/100;
+				// if (elapsed < 20) {
+					away -= 0.03f*forward();
+					away += cross(up, tmp_agent->forward())/dst;
+				// }
+			}
+			if (id() == 3) {
+				away += cross(up, forward())/dst;
+			}
+			else if (id() == 1 && tmp_agent->id() == 3) {
+				away += normalize(tmp_agent->position() - position())/100;
+				// if (elapsed < 30) {
+					away -= 0.03f*forward();
+					away += cross(up, tmp_agent->forward())/dst;
+				// }
+			}
+			// if ( (position() - tmp_agent->position()).length() < 1.5f ) {
+				away = away +
 						(
-							_SocialForcesParams.sf_agent_a
+							away_tmp
 							*
-							exp(
-								(
+							(
+								_SocialForcesParams.sf_agent_a
+								*
+								exp(
 									(
 										(
-											this->radius()
-											+
-											tmp_agent->radius()
-										)
-										-
-										(
-											this->position()
+											(
+												this->radius()
+												+
+												tmp_agent->radius()
+											)
 											-
-											tmp_agent->position()
-										).length()
+											(
+												this->position()
+												-
+												tmp_agent->position()
+											).length()
+										)
+										/
+										_SocialForcesParams.sf_agent_b
 									)
-									/
-									_SocialForcesParams.sf_agent_b
 								)
+
+
 							)
-
-
-						)
-						*
-						dt
+							*
+							dt
 					);
 			/*
 			std::cout << "agent " << this->id() << " away this far " << away <<
@@ -691,7 +718,8 @@ Util::Vector SocialForcesAgent::calcWallRepulsionForce(float dt)
 		}
 
 	}
-	return wall_repulsion_force;
+	// return wall_repulsion_force;
+	return Util::Vector(0, 0, 0);
 }
 
 std::pair<Util::Point, Util::Point> SocialForcesAgent::calcWallPointsFromNormal(SteerLib::ObstacleInterface* obs, Util::Vector normal)
