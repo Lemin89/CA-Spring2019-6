@@ -12,6 +12,7 @@
 
 #include <queue>
 #include <list>
+#include <math.h>
 #include "SteerLib.h"
 // #include "SimpleAgent.h"
 // #include "SocialForcesAIModule.h"

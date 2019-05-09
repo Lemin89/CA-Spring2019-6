@@ -278,6 +278,7 @@ namespace Util {
 	/// Vector normalization; beware it is costly, using both a division and a square-root operation.
 	static inline Vector normalize(const Vector &vec) { float lengthInv = 1.0f / sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);  return Vector(lengthInv * vec.x, lengthInv * vec.y, lengthInv * vec.z); }
 	static inline Point normalize(const Point &vec) { float lengthInv = 1.0f / sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);  return Point(lengthInv * vec.x, lengthInv * vec.y, lengthInv * vec.z); }
+	static inline Vector squareNormalize(const Vector &vec) { float lengthInv = 1.0f / (vec.x*vec.x + vec.y*vec.y + vec.z*vec.z); return Vector(lengthInv * vec.x, lengthInv * vec.y, lengthInv * vec.z); }
 	/// Returns the dot product of two vectors.
 	static inline float dot(const Vector &vec1, const Vector &vec2) { return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z; }
 	// Don't ask.... (Glen)
