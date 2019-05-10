@@ -36,7 +36,7 @@ if [ -d bin/ ]; then
     if [[ $BUILD_MODULE == "all" || $BUILD_MODULE == "navmesh" ]]; then
     	rm -f bin/navmeshBuilder
     fi
-    rmdir bin/
+
 fi
 
 # This brute-force careful approach makes sure we don't delete
@@ -154,8 +154,8 @@ fi
 
 # This brute-force careful approach makes sure we don't delete
 # potentially precious files that the user forgot inside directory.
-echo "Cleaning gmake/"
-if [ -d gmake/ ]; then
-	rm -rf gmake/
-fi
+
+
+
+
 

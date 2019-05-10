@@ -1,3 +1,4 @@
+  
 //
 // Copyright (c) 2009-2015 Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
 // See license.txt for complete license.
@@ -211,7 +212,8 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		}
 	}
 
-	//runLongTermPlanning(_goalQueue.front().targetLocation, dont_plan);
+	// runLongTermPlanning(_goalQueue.front().targetLocation, dont_plan);
+
 	// pursue and evade stuff
 	if (id() == 0) {
 		pursue.x = position().x;
@@ -311,6 +313,29 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	Util::Vector away = Util::Vector(0,0,0);
 	Util::Vector away_obs = Util::Vector(0,0,0);
 
+	float dst = position().vector().lengthSquared() + 40;
+	// if (dst < 40)
+	// 	dst = 40;
+	if (id() == 2 && position().x < 2.3f) {
+		away += Util::Vector(0, 0, 1)/dst;
+	}
+	if (id() == 1) {
+		float turnpoint = 1.32f;
+		if (position().x > turnpoint) {
+			away += Util::Vector(0, 0, -1)/4.2f/dst;
+			away += 0.006f * Util::Vector(1, 0, 0);
+		}
+		if (position().x > 0.7 && position().x <= turnpoint) {
+			away += Util::Vector(0, 0, 1)/25.5f;
+			away += 0.01f * Util::Vector(1, 0, 0);
+		}
+		else {
+			// if (elapsed > 36 && elapsed < 39){
+			// 	away += Util::Vector(0, 0, 1)/dst;
+			// }
+		}
+
+	}
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
 	{
@@ -329,88 +354,30 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
 			// if (elapsed > 400*dt && elapsed < 600*dt)
 			// 	away = away + cross(up, forward())/50;
-			if ((forward() + tmp_agent->forward()).lengthSquared() < 0.6f) {
-				// if the distance between this and tmp_agent is going to decrease in the next timestep && if the z coordinates align
-				if ( (position() - tmp_agent->position()).lengthSquared() 
-					> (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() 
-					&& 	(position().z - tmp_agent->position().z) < 0.85f) {
-					// agents are_heading towards each other and are getting closer
-					// check whether it's easier to dodge up or down, this might be less efficient than grouping
-					if (position().z >= tmp_agent->position().z - 0.14f)
-						away.z += 1.0f / 12;
-					else
-						away.z -= 1.0f / 16;
-					away -= 0.034f * forward();
-				}
-			}
-
-
-			// follow the leader
-			// follow anyone that is in front with a following force
-			// the following force is proportional to the z-distance (a.k.a how inline of me they are)
-			if ((forward() - tmp_agent->forward()).lengthSquared() < 0.2f 
-				&& (forward() - tmp_agent->forward()).lengthSquared() > 0.15f
-				&& position().x < tmp_agent->position().x + tmp_agent->velocity().x*3*dt) {
-
-				float cing = 1.2f*log(1 + std::abs(position().z - tmp_agent->position().z));
-				if (cing < 0)
-					cing = 0;
-				if (cing > 0.052f)
-					cing = 0.052f;
-				if (position().z <= tmp_agent->position().z)
-					cing *= -1;
-				
-				away.z += cing;
-
-			}
-
-
-			// if (id() && tmp_agent->position().x < 1.3f) {
-			// 	away += Util::Vector(0, 0, 1) * tmp_agent->position().vector().length()/105.0f;
-			// 	away -= 0.055f * forward();
-			// }
-
-			// if (id() && tmp_agent->position().x > 1.3f && position().x > 0.7) {
-			// 	away += Util::Vector(0, 0, -1)/8;
-			// 	away -= 0.07f * forward();
-			// }
-			// if (id() == 0 && position().x < 0)
-			// 	away += Util::Vector(0, 0, -1)/80;
-			// float dst = position().vector().lengthSquared() + 40;
-			// if (dst < 40)
-			// 	dst = 40;
-			// if (id() == 2) {
-			// 	away -= cross(up, forward())/dst;
-			// }
-			// else if (id() == 0 && tmp_agent->id() == 2) {
-			// 	away += normalize(tmp_agent->position() - position())/100;
-			// 	// if (elapsed < 20) {
-			// 		away -= 0.03f*forward();
-			// 		away -= 1.2f*cross(up, tmp_agent->mazeforward())/dst;
+			// if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.2f) {
+			// 	// if the distance between this and tmp_agent is going to decrease in the next timestep
+			// 	if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
+			// 		// agents are_heading towards each other and are getting closer
+			// 		away = away - normalize(cross(up, forward()))/20;
+			// 	}
+			// 	// if ((position()-tmp_agent->position()).length() < 3.0f) {
+			// 	// 	away -= 0.2f*velocity();
 			// 	// }
 			// }
-			// if (id() == 1) {
-			// 	if (elapsed < 32){
-			// 		away -= 1.5f*cross(up, Util::Vector(-1, 0, 0))/dst;
-			// 	}
-			// 	if (elapsed < 36){
-			// 		away -= 0.03f * forward();
-			// 	}
-			// 	else{
-			// 		if (elapsed > 36 && elapsed < 39){
-			// 			printf("T\n");
-			// 			away += cross(up, Util::Vector(-1, 0, 0))/dst;
-			// 		}
-			// 	}
-			// }
-
-			// else if (id() == 1 && tmp_agent->id() == 3) {
-			// 	away += normalize(tmp_agent->position() - position())/100;
-			// 	// if (elapsed < 30) {
-			// 		away -= 0.03f*forward();
-			// 		away -= cross(up, tmp_agent->forward())/dst;
-			// 	// }
-			// }
+			if (id() == 0 && tmp_agent->id() == 2 && position().x < 2.3f) {
+				away += normalize(tmp_agent->position() - position())/100;
+				// if (elapsed < 20) {
+					away -= 0.001f * forward();
+					away += 0.6f * Util::Vector(0, 0, 1)/dst;
+				// }
+			}
+			if (id() == 1 && tmp_agent->id() == 3) {
+				away += normalize(tmp_agent->position() - position())/100;
+				// if (elapsed < 30) {
+					away -= 0.01f * forward();
+					away += Util::Vector(0, 0, 1)/dst;
+				// }
+			}
 			// if ( (position() - tmp_agent->position()).length() < 1.5f ) {
 				away = away +
 						(
@@ -613,7 +580,6 @@ Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 							(
 								(-1*position()) - tmp_agent->position()
 							).length()
-
 						)*0.2;
 						*/
 				//TODO this can have some funny behaviour is velocity == 0
@@ -631,7 +597,7 @@ Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 					) * tangent * tanget_v_diff
 
 				);
-				// printf("collision\n");
+				printf("collision\n");
 			}
 			else {
 				/* If a head on collision is about to happen, but hasn't happened, apply a force that pushes you to the left */
@@ -915,7 +881,6 @@ Util::Vector SocialForcesAgent::calcObsNormal(SteerLib::ObstacleInterface* obs)
 void SocialForcesAgent::computeNeighbors()
 {
 	agentNeighbors_.clear();
-
 	if (_SocialForcesParams.rvo_max_neighbors > 0) {
 		// std::cout << "About to segfault" << std::endl;
 		dynamic_cast<SocialForcesAIModule *>(rvoModule)->kdTree_->computeAgentNeighbors(this, _SocialForcesParams.rvo_neighbor_distance * _SocialForcesParams.rvo_neighbor_distance);
@@ -1155,7 +1120,6 @@ void SocialForcesAgent::draw() {
 	/*
 	// draw normals and closest points on walls
 	std::set<SteerLib::ObstacleInterface * > tmp_obs = gEngine->getObstacles();
-
 	for (std::set<SteerLib::ObstacleInterface * >::iterator tmp_o = tmp_obs.begin();  tmp_o != tmp_obs.end();  tmp_o++)
 	{
 		Util::Vector normal = calcWallNormal( *tmp_o );
@@ -1163,7 +1127,6 @@ void SocialForcesAgent::draw() {
 		Util::Point midpoint = Util::Point((line.first.x+line.second.x)/2, ((line.first.y+line.second.y)/2)+1,
 				(line.first.z+line.second.z)/2);
 		DrawLib::drawLine(midpoint, midpoint+normal, gGreen);
-
 		// Draw the closes point as well
 		std::pair<float, Util::Point> min_stuff = minimum_distance(line.first, line.second, position());
 		DrawLib::drawStar(min_stuff.second, Util::Vector(1,0,0), 0.34f, gGreen);
@@ -1174,4 +1137,3 @@ void SocialForcesAgent::draw() {
 
 #endif
 }
-

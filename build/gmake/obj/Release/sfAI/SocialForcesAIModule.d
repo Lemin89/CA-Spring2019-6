@@ -120,6 +120,7 @@ obj/Release/sfAI/SocialForcesAIModule.o: \
  ../../socialForcesAI/include/SocialForces_Parameters.h \
  ../../util/include/Logger.h \
  ../../socialForcesAI/include/SocialForcesAgent.h \
+ ../../steerlib/include/planning/AStarPlanner.h \
  ../../util/include/LogObject.h ../../util/include/LogManager.h
 
 ../../steerlib/include/SimulationPlugin.h:
@@ -373,6 +374,8 @@ obj/Release/sfAI/SocialForcesAIModule.o: \
 ../../util/include/Logger.h:
 
 ../../socialForcesAI/include/SocialForcesAgent.h:
+
+../../steerlib/include/planning/AStarPlanner.h:
 
 ../../util/include/LogObject.h:
 

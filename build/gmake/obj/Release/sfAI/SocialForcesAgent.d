@@ -115,6 +115,7 @@ obj/Release/sfAI/SocialForcesAgent.o: \
  ../../steerlib/include/modules/SteerBugModule.h \
  ../../steerlib/include/modules/TestCasePlayerModule.h \
  ../../socialForcesAI/include/SocialForces_Parameters.h \
+ ../../steerlib/include/planning/AStarPlanner.h \
  ../../socialForcesAI/include/SocialForcesAIModule.h \
  ../../util/include/Logger.h \
  ../../socialForcesAI/include/SocialForces_Parameters.h
@@ -364,6 +365,8 @@ obj/Release/sfAI/SocialForcesAgent.o: \
 ../../steerlib/include/modules/TestCasePlayerModule.h:
 
 ../../socialForcesAI/include/SocialForces_Parameters.h:
+
+../../steerlib/include/planning/AStarPlanner.h:
 
 ../../socialForcesAI/include/SocialForcesAIModule.h:
 

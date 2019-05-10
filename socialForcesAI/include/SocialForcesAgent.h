@@ -18,6 +18,8 @@
 // #include "SocialForcesAIModule.h"
 #include "SocialForces_Parameters.h"
 
+#include "planning/AStarPlanner.h"
+
 
 /**
  * @brief Social Forces Agent stuff
@@ -68,6 +70,8 @@ public:
 	static bool pursueIsLive;
 	static float elapsed;
 
+	SteerLib::AStarPlanner astar;
+
 protected:
 	/// Updates position, velocity, and orientation of the agent, given the force and dt time step.
 	// void _doEulerStep(const Util::Vector & steeringDecisionForce, float dt);
@@ -91,12 +95,15 @@ protected:
 	SteerLib::ModuleInterface * rvoModule;
 
 	SteerLib::EngineInterface * _gEngine;
+	std::vector<Util::Point> __path;
+	Util::Point __next_waypoint;
+	int last_waypoint = 0;
 
 	// Used to store Waypoints between goals
 	// A waypoint is choosen every FURTHEST_LOCAL_TARGET_DISTANCE
 
 private:
-	// bool runLongTermPlanning();
+	// bool runLongTermPlanning(Util::Point goal, bool pllen);
 	// bool reachedCurrentWaypoint();
 	// void updateMidTermPath();
 	// bool hasLineOfSightTo(Util::Point point);

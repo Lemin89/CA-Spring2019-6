@@ -22,13 +22,13 @@
 
 // Set to false for Euclidean distance
 #define USE_MANHATTAN_DISTANCE false
-#define PRINT_RESULTS true
+#define PRINT_RESULTS false
 
 // choose algorithm
 #define A_STAR 1
 #define ARA_STAR 2
 #define AD_STAR 3
-#define USE_ALGORITHM ARA_STAR
+#define USE_ALGORITHM A_STAR
 
 namespace SteerLib
 {
@@ -113,7 +113,7 @@ namespace SteerLib
 	
 	std::vector<Util::Point> AStarPlanner::ARAStarPath(Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& InConsistSet, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap) {
 		std::vector<Util::Point> path;
-		float initial_weight = 1;
+		float initial_weight = 12;
 		float decrease_rate = 1;
 		float current_weight = initial_weight;
 
@@ -129,13 +129,13 @@ namespace SteerLib
 
 		while (current_weight > 1) {
 			current_weight = current_weight - decrease_rate;
-			for (unsigned i = 0; i < InConsistSet.size(); i++) {
+			for (int i = 0; i < InConsistSet.size(); i++) {
 				OpenSet.push_back(InConsistSet.at(i));
 			}
 			InConsistSet.clear();
 
 			//update f values in open set
-			for (unsigned i = 0; i< OpenSet.size(); i++)
+			for (int i = 0; i< OpenSet.size(); i++)
 			{
 				NodeMap.at(OpenSet[i]).f = NodeMap.at(OpenSet[i]).g + Heuristic(OpenSet[i], goal, current_weight);
 			}
@@ -167,10 +167,6 @@ namespace SteerLib
 		// if (NodeMap.empty()) {
 		// 	NodeMap.emplace(start, startNode);
 		// }
-
-		// if the NodeMap doesn't contain the goal
-		if (NodeMap.count(goal) == 0)
-			NodeMap.emplace(goal, goalNode);
 		lowestFIndex = 0;
 		lowestFScore = NodeMap.at(OpenSet[0]).f;
 		for (unsigned i = 0; i < OpenSet.size(); i++) {
@@ -179,10 +175,10 @@ namespace SteerLib
 				GScore = NodeMap.at(OpenSet[i]).g;
 				lowestFIndex = i;
 			}
-			std::cout << OpenSet[i] << ", ";
+			// std::cout << OpenSet[i] << ", ";
 		}
-		std::cout << std::endl << lowestFIndex << ", " << lowestFScore << std::endl;
-		while (NodeMap.at(goal).f > lowestFScore) {
+		// std::cout << std::endl << lowestFIndex << ", " << lowestFScore << std::endl;
+		while (goalNode.f > lowestFScore) {
 			AStarPlannerNode CurrentNode = NodeMap.at(OpenSet[lowestFIndex]);
 			OpenSet.erase(OpenSet.begin() + lowestFIndex);
 			ClosedSet.push_back(OpenSet[lowestFIndex]);
@@ -197,14 +193,9 @@ namespace SteerLib
 					lowestFIndex = i;
 				}
 			}
-			// std::cout << "goal.f:" << NodeMap.at(goal).f << " idx:" << lowestFIndex << ", f:" << lowestFScore << " at " << OpenSet[lowestFIndex] << std::endl;
 		}
 		AStarPlannerNode node = NodeMap.at(goal);
 		path.push_back(goal);
-		std::cout << std::endl << "start:" << start << " goal:" << goal << std::endl;
-		for (auto it : CameFromNodeMap){
-			std::cout << it.first.point << ":" << it.second.point << std::endl;
-		}
 		while (node.point != start) {
 			node = CameFromNodeMap.at(node);
 			path.push_back(node.point);
@@ -220,6 +211,7 @@ namespace SteerLib
 		double lowestFScore = 0;
 		int lowestFIndex = 0;
 		double GScore;
+		double CostSoFar;
 		double TotalLength;
 
 		SteerLib::AStarPlannerNode StartNode(start, 0, Heuristic(start, goal, WEIGHT), nullptr);
@@ -231,7 +223,7 @@ namespace SteerLib
 			lowestFScore = NodeMap.at(OpenSet[0]).f;
 			GScore = NodeMap.at(OpenSet[0]).g;
 			lowestFIndex = 0;
-			for (unsigned i = 0; i< OpenSet.size(); i++)
+			for (int i = 0; i< OpenSet.size(); i++)
 			{
 				if (NodeMap.at(OpenSet[i]).f < lowestFScore)
 				{
@@ -309,6 +301,9 @@ namespace SteerLib
 
 	void AStarPlanner::NeighborNodes(Util::Point OriginPoint, Util::Point goal, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& OpenSet, std::vector<Util::Point>& InConsistSet, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap, float WEIGHT)
 	{
+		int x;
+		int y;
+		int z;
 		double InitialCost;
 		SteerLib::AStarPlannerNode OriginNode = NodeMap.at(OriginPoint);
 		InitialCost = std::numeric_limits<double>::infinity();
@@ -352,7 +347,6 @@ namespace SteerLib
 			if (std::find(ClosedSet.begin(), ClosedSet.end(), CurrentPoint) != ClosedSet.end()) {
 				if (std::find(InconsSet.begin(), InconsSet.end(), CurrentPoint) == InconsSet.end()) {
 					InconsSet.push_back(CurrentPoint);
-					return;
 				}
 			}
 			else {
@@ -361,9 +355,9 @@ namespace SteerLib
 				}
 			}
 		}
-		// if (std::find(ClosedSet.begin(), ClosedSet.end(), CurrentPoint) != ClosedSet.end()) { // if currentPoint is in closed set{
-		// 	return;
-		// }
+		if (std::find(ClosedSet.begin(), ClosedSet.end(), CurrentPoint) != ClosedSet.end()) { // if currentPoint is in closed set{
+			return;
+		}
 		TentativeScore = FromNode.g + distanceBetween(FromNode.point, CurrentPoint);
 		SteerLib::AStarPlannerNode InsertNode(CurrentPoint, TentativeScore, TentativeScore + Heuristic(CurrentPoint, goal, WEIGHT), &FromNode);
 		NodeMap.erase(CurrentPoint);
@@ -377,6 +371,7 @@ namespace SteerLib
 	void AStarPlanner::AddNode(Util::Point CurrentPoint, double cost, SteerLib::AStarPlannerNode FromNode, Util::Point goal, std::map<Util::Point, SteerLib::AStarPlannerNode, epsilonComparator>& NodeMap, std::vector<Util::Point>& ClosedSet, std::vector<Util::Point>& OpenSet, std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>& CameFromNodeMap, float WEIGHT)
 	{
 		int NodeIndex;
+		float DistanceInBetween;
 		double TentativeScore;
 		NodeIndex = gSpatialDatabase->getCellIndexFromLocation(CurrentPoint);
 		std::map<SteerLib::AStarPlannerNode, SteerLib::AStarPlannerNode, NodeComparator>::iterator CameFromMapIt;

@@ -1,24 +1,9 @@
-obj/Debug/sfAI/SocialForcesAIModule.o: \
- ../../socialForcesAI/src/SocialForcesAIModule.cpp \
- ../../steerlib/include/SimulationPlugin.h \
- ../../steerlib/include/interfaces/ModuleInterface.h \
- ../../steerlib/include/Globals.h \
- ../../steerlib/include/interfaces/AgentInterface.h \
- ../../steerlib/include/testcaseio/AgentInitialConditions.h \
- ../../steerlib/include/util/Geometry.h \
- ../../steerlib/include/util/Color.h \
- ../../steerlib/include/testcaseio/Behaviour.h \
- ../../steerlib/include/testcaseio/BehaviourParameter.h \
- ../../steerlib/include/interfaces/SpatialDataBaseInterface.h \
- ../../steerlib/include/interfaces/SpatialDatabaseItem.h \
- ../../steerlib/include/interfaces/ObstacleInterface.h \
- ../../steerlib/include/util/GenericException.h \
- ../../util/include/LogData.h ../../util/include/Logger.h \
- ../../util/include/LogObject.h ../../util/include/UtilGlobals.h \
- ../../socialForcesAI/include/SocialForcesAIModule.h \
- ../../steerlib/include/SteerLib.h ../../steerlib/include/Globals.h \
- ../../steerlib/include/Util.h ../../steerlib/include/util/Curve.h \
- ../../steerlib/include/util/Color.h \
+obj/Release/scenario/ScenarioModule.o: \
+ ../../scenario/src/ScenarioModule.cpp ../../steerlib/include/SteerLib.h \
+ ../../steerlib/include/Globals.h ../../steerlib/include/Util.h \
+ ../../steerlib/include/util/Curve.h \
+ ../../steerlib/include/util/Geometry.h ../../steerlib/include/Globals.h \
+ ../../steerlib/include/util/Color.h ../../steerlib/include/util/Color.h \
  ../../steerlib/include/util/CommandLineParser.h \
  ../../steerlib/include/util/DrawLib.h \
  ../../steerlib/include/util/DynamicLibrary.h \
@@ -34,6 +19,7 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
  ../../steerlib/include/util/PerformanceProfiler.h \
  ../../steerlib/include/util/HighResCounter.h \
  ../../steerlib/include/util/StateMachine.h \
+ ../../steerlib/include/util/GenericException.h \
  ../../steerlib/include/util/Misc.h \
  ../../steerlib/include/util/ThreadedTaskManager.h \
  ../../steerlib/include/util/XMLParser.h \
@@ -44,8 +30,14 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
  ../../steerlib/include/testcaseio/TestCaseIOPrivate.h \
  ../../steerlib/include/simulation/Camera.h \
  ../../steerlib/include/util/Curve.h \
+ ../../steerlib/include/interfaces/SpatialDataBaseInterface.h \
+ ../../steerlib/include/interfaces/SpatialDatabaseItem.h \
+ ../../steerlib/include/testcaseio/AgentInitialConditions.h \
+ ../../steerlib/include/testcaseio/Behaviour.h \
+ ../../steerlib/include/testcaseio/BehaviourParameter.h \
  ../../steerlib/include/testcaseio/ObstacleInitialConditions.h \
  ../../steerlib/include/obstacles/BoxObstacle.h \
+ ../../steerlib/include/interfaces/ObstacleInterface.h \
  ../../steerlib/include/obstacles/CircleObstacle.h \
  ../../steerlib/include/obstacles/OrientedBoxObstacle.h \
  ../../steerlib/include/obstacles/OrientedWallObstacle.h \
@@ -54,12 +46,15 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
  ../../steerlib/include/interfaces/EngineInterface.h \
  ../../steerlib/include/interfaces/PlanningDomainInterface.h \
  ../../steerlib/include/recfileio/RecFileIO.h \
+ ../../steerlib/include/interfaces/AgentInterface.h \
  ../../steerlib/include/interfaces/EngineControllerInterface.h \
  ../../steerlib/include/util/DrawLib.h \
  ../../steerlib/include/util/DynamicLibrary.h \
  ../../steerlib/include/simulation/Clock.h \
  ../../steerlib/include/simulation/SimulationOptions.h \
  ../../steerlib/include/interfaces/ModuleInterface.h \
+ ../../util/include/LogData.h ../../util/include/Logger.h \
+ ../../util/include/LogObject.h ../../util/include/UtilGlobals.h \
  ../../steerlib/include/testcaseio/AgentInitialConditions.h \
  ../../steerlib/include/testcaseio/ObstacleInitialConditions.h \
  ../../steerlib/include/griddatabase/GridCell.h \
@@ -107,6 +102,7 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
  ../../steerlib/include/interfaces/EngineControllerInterface.h \
  ../../steerlib/include/interfaces/EngineInterface.h \
  ../../steerlib/include/interfaces/ObstacleInterface.h \
+ ../../steerlib/include/interfaces/ModuleInterface.h \
  ../../steerlib/include/interfaces/SpatialDatabaseItem.h \
  ../../steerlib/include/modules/DummyAIModule.h \
  ../../steerlib/include/modules/MetricsCollectorModule.h \
@@ -117,47 +113,10 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
  ../../steerlib/include/modules/MetricsCollectorModule.h \
  ../../steerlib/include/modules/SteerBugModule.h \
  ../../steerlib/include/modules/TestCasePlayerModule.h \
- ../../socialForcesAI/include/SocialForces_Parameters.h \
- ../../util/include/Logger.h \
- ../../socialForcesAI/include/SocialForcesAgent.h \
- ../../steerlib/include/planning/AStarPlanner.h \
- ../../util/include/LogObject.h ../../util/include/LogManager.h
-
-../../steerlib/include/SimulationPlugin.h:
-
-../../steerlib/include/interfaces/ModuleInterface.h:
-
-../../steerlib/include/Globals.h:
-
-../../steerlib/include/interfaces/AgentInterface.h:
-
-../../steerlib/include/testcaseio/AgentInitialConditions.h:
-
-../../steerlib/include/util/Geometry.h:
-
-../../steerlib/include/util/Color.h:
-
-../../steerlib/include/testcaseio/Behaviour.h:
-
-../../steerlib/include/testcaseio/BehaviourParameter.h:
-
-../../steerlib/include/interfaces/SpatialDataBaseInterface.h:
-
-../../steerlib/include/interfaces/SpatialDatabaseItem.h:
-
-../../steerlib/include/interfaces/ObstacleInterface.h:
-
-../../steerlib/include/util/GenericException.h:
-
-../../util/include/LogData.h:
-
-../../util/include/Logger.h:
-
-../../util/include/LogObject.h:
-
-../../util/include/UtilGlobals.h:
-
-../../socialForcesAI/include/SocialForcesAIModule.h:
+ ../../steerlib/include/SimulationPlugin.h \
+ ../../scenario/include/ScenarioModule.h ../../util/include/LogManager.h \
+ ../../steerlib/include/util/FrameSaver.h ../../util/include/LogObject.h \
+ ../../util/include/Logger.h
 
 ../../steerlib/include/SteerLib.h:
 
@@ -166,6 +125,12 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 ../../steerlib/include/Util.h:
 
 ../../steerlib/include/util/Curve.h:
+
+../../steerlib/include/util/Geometry.h:
+
+../../steerlib/include/Globals.h:
+
+../../steerlib/include/util/Color.h:
 
 ../../steerlib/include/util/Color.h:
 
@@ -203,6 +168,8 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 
 ../../steerlib/include/util/StateMachine.h:
 
+../../steerlib/include/util/GenericException.h:
+
 ../../steerlib/include/util/Misc.h:
 
 ../../steerlib/include/util/ThreadedTaskManager.h:
@@ -223,9 +190,21 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 
 ../../steerlib/include/util/Curve.h:
 
+../../steerlib/include/interfaces/SpatialDataBaseInterface.h:
+
+../../steerlib/include/interfaces/SpatialDatabaseItem.h:
+
+../../steerlib/include/testcaseio/AgentInitialConditions.h:
+
+../../steerlib/include/testcaseio/Behaviour.h:
+
+../../steerlib/include/testcaseio/BehaviourParameter.h:
+
 ../../steerlib/include/testcaseio/ObstacleInitialConditions.h:
 
 ../../steerlib/include/obstacles/BoxObstacle.h:
+
+../../steerlib/include/interfaces/ObstacleInterface.h:
 
 ../../steerlib/include/obstacles/CircleObstacle.h:
 
@@ -243,6 +222,8 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 
 ../../steerlib/include/recfileio/RecFileIO.h:
 
+../../steerlib/include/interfaces/AgentInterface.h:
+
 ../../steerlib/include/interfaces/EngineControllerInterface.h:
 
 ../../steerlib/include/util/DrawLib.h:
@@ -254,6 +235,14 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 ../../steerlib/include/simulation/SimulationOptions.h:
 
 ../../steerlib/include/interfaces/ModuleInterface.h:
+
+../../util/include/LogData.h:
+
+../../util/include/Logger.h:
+
+../../util/include/LogObject.h:
+
+../../util/include/UtilGlobals.h:
 
 ../../steerlib/include/testcaseio/AgentInitialConditions.h:
 
@@ -349,6 +338,8 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 
 ../../steerlib/include/interfaces/ObstacleInterface.h:
 
+../../steerlib/include/interfaces/ModuleInterface.h:
+
 ../../steerlib/include/interfaces/SpatialDatabaseItem.h:
 
 ../../steerlib/include/modules/DummyAIModule.h:
@@ -369,14 +360,14 @@ obj/Debug/sfAI/SocialForcesAIModule.o: \
 
 ../../steerlib/include/modules/TestCasePlayerModule.h:
 
-../../socialForcesAI/include/SocialForces_Parameters.h:
+../../steerlib/include/SimulationPlugin.h:
 
-../../util/include/Logger.h:
+../../scenario/include/ScenarioModule.h:
 
-../../socialForcesAI/include/SocialForcesAgent.h:
+../../util/include/LogManager.h:
 
-../../steerlib/include/planning/AStarPlanner.h:
+../../steerlib/include/util/FrameSaver.h:
 
 ../../util/include/LogObject.h:
 
-../../util/include/LogManager.h:
+../../util/include/Logger.h:
