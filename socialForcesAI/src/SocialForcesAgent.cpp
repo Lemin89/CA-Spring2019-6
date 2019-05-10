@@ -313,29 +313,29 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	Util::Vector away = Util::Vector(0,0,0);
 	Util::Vector away_obs = Util::Vector(0,0,0);
 
-	float dst = position().vector().lengthSquared() + 40;
-	// if (dst < 40)
-	// 	dst = 40;
-	if (id() == 2 && position().x < 2.3f) {
-		away += Util::Vector(0, 0, 1)/dst;
-	}
-	if (id() == 1) {
-		float turnpoint = 1.32f;
-		if (position().x > turnpoint) {
-			away += Util::Vector(0, 0, -1)/4.2f/dst;
-			away += 0.006f * Util::Vector(1, 0, 0);
-		}
-		if (position().x > 0.7 && position().x <= turnpoint) {
-			away += Util::Vector(0, 0, 1)/25.5f;
-			away += 0.01f * Util::Vector(1, 0, 0);
-		}
-		else {
-			// if (elapsed > 36 && elapsed < 39){
-			// 	away += Util::Vector(0, 0, 1)/dst;
-			// }
-		}
+	// float dst = position().vector().lengthSquared() + 40;
+	// // if (dst < 40)
+	// // 	dst = 40;
+	// if (id() == 2 && position().x < 2.3f) {
+	// 	away += Util::Vector(0, 0, 1)/dst;
+	// }
+	// if (id() == 1) {
+	// 	float turnpoint = 1.32f;
+	// 	if (position().x > turnpoint) {
+	// 		away += Util::Vector(0, 0, -1)/4.2f/dst;
+	// 		away += 0.006f * Util::Vector(1, 0, 0);
+	// 	}
+	// 	if (position().x > 0.7 && position().x <= turnpoint) {
+	// 		away += Util::Vector(0, 0, 1)/25.5f;
+	// 		away += 0.01f * Util::Vector(1, 0, 0);
+	// 	}
+	// 	else {
+	// 		// if (elapsed > 36 && elapsed < 39){
+	// 		// 	away += Util::Vector(0, 0, 1)/dst;
+	// 		// }
+	// 	}
 
-	}
+	// }
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
 	{
@@ -354,30 +354,51 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
 			// if (elapsed > 400*dt && elapsed < 600*dt)
 			// 	away = away + cross(up, forward())/50;
-			// if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.2f) {
+
+			/* double squeeze */
+			// if ((normalize(velocity()) + normalize(tmp_agent->velocity())).lengthSquared() < 0.3f) {
 			// 	// if the distance between this and tmp_agent is going to decrease in the next timestep
 			// 	if ( (position() - tmp_agent->position()).lengthSquared() > (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared() ) {
 			// 		// agents are_heading towards each other and are getting closer
-			// 		away = away - normalize(cross(up, forward()))/20;
+			// 		if (id() % 2 == 0) {
+			// 			if (id() == 0){
+			// 				away += Util::Vector(0, 0, 1)/168;
+			// 				away += -0.006f * forward();
+			// 			}
+			// 			else{
+			// 				away += Util::Vector(0, 0, 1)/168;
+			// 				away += -0.004f * forward();
+			// 			}
+			// 		}
+			// 		else {
+			// 			if (id() == 1){
+			// 				away += Util::Vector(0, 0, -1)/168;
+			// 				away += -0.006f * forward();
+			// 			}
+			// 			else{
+			// 				away += Util::Vector(0, 0, -1)/168;
+			// 				away += -0.004f * forward();
+			// 			}
+			// 		}
 			// 	}
-			// 	// if ((position()-tmp_agent->position()).length() < 3.0f) {
-			// 	// 	away -= 0.2f*velocity();
+			// }
+
+
+			
+			// if (id() == 0 && tmp_agent->id() == 2 && position().x < 2.3f) {
+			// 	away += normalize(tmp_agent->position() - position())/100;
+			// 	// if (elapsed < 20) {
+			// 		away -= 0.001f * forward();
+			// 		away += 0.6f * Util::Vector(0, 0, 1)/dst;
 			// 	// }
 			// }
-			if (id() == 0 && tmp_agent->id() == 2 && position().x < 2.3f) {
-				away += normalize(tmp_agent->position() - position())/100;
-				// if (elapsed < 20) {
-					away -= 0.001f * forward();
-					away += 0.6f * Util::Vector(0, 0, 1)/dst;
-				// }
-			}
-			if (id() == 1 && tmp_agent->id() == 3) {
-				away += normalize(tmp_agent->position() - position())/100;
-				// if (elapsed < 30) {
-					away -= 0.01f * forward();
-					away += Util::Vector(0, 0, 1)/dst;
-				// }
-			}
+			// if (id() == 1 && tmp_agent->id() == 3) {
+			// 	away += normalize(tmp_agent->position() - position())/100;
+			// 	// if (elapsed < 30) {
+			// 		away -= 0.01f * forward();
+			// 		away += Util::Vector(0, 0, 1)/dst;
+			// 	// }
+			// }
 			// if ( (position() - tmp_agent->position()).length() < 1.5f ) {
 				away = away +
 						(
