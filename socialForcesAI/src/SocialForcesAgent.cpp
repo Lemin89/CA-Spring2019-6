@@ -335,6 +335,22 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	// 		// }
 	// 	}
 
+
+	/* doorway two way */
+	float turnpoint = 1.5f;
+	if (id() == 0 && position().x < 0.3) {
+		away += Util::Vector(0, 0, -1)/410;
+	}
+	else if (id() == 1 && position().x > turnpoint) {
+		away += Util::Vector(0, 0, 1)/250;
+		away += -0.013 * forward();
+	}
+	else if (id() == 1 && position().x > 0.1f && position().x <= turnpoint) {
+		away += Util::Vector(0, 0, -1)/37;
+		away += -0.02 * forward();
+	}
+
+
 	// }
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
@@ -383,8 +399,6 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// 	}
 			// }
 
-
-			
 			// if (id() == 0 && tmp_agent->id() == 2 && position().x < 2.3f) {
 			// 	away += normalize(tmp_agent->position() - position())/100;
 			// 	// if (elapsed < 20) {
