@@ -361,6 +361,54 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	// 	away.z -= 1.0f / 45.0f;
 	// }
 	// away += -0.001f * forward();
+	float beforeSquare = 1.0f / 60.0f;
+	float inSquare = 1.0f / 30.0f;
+	float afterSquare = 1.0f / 30.0f;
+	if (id() < 100) {
+
+		if (position().x < -6 && position().x > -10		&& position().z < 9) {
+			away.z += (10 - position().z) * inSquare;
+		}
+		else if (position().x < -10){
+			away.z += beforeSquare;
+		}
+		else if (position().x > 6 && position().x < 11) {
+			away.z -= afterSquare;
+		}
+	}
+	else if (id() < 200) {
+		if (position().x > 6 && position().x < 10 		&& position().z > -9) {
+			away.z -= std::abs(-10 - position().z) * inSquare;
+		}
+		else if (position().x > 10) {
+			away.z -= beforeSquare;
+		}
+		else if (position().x < -6 && position().x > -11) {
+			away.z += afterSquare;
+		}
+	}
+	else if (id() < 300) {
+		if (position().z > 6 && position().z < 10 		&& position().x < 9) {
+			away.x += (10 - position().x) * inSquare;
+		}
+		else if (position().z > 10) {
+			away.x += beforeSquare;
+		}
+		else if (position().z < -6 && position().z > -11) {
+			away.x -= beforeSquare;
+		}
+	}
+	else if (id() < 400) {
+		if (position().z < -6 && position().z > -10 	&& position().x > -9) {
+			away.x -= std::abs(-10 - position().x) * inSquare;
+		}
+		else if (position().z < -10) {
+			away.x -= beforeSquare;
+		}
+		else if (position().z > 6 && position().z < 11) {
+			away.x += beforeSquare;
+		}
+	}
 
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
@@ -447,17 +495,17 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// }
 
 			// hallway-two-way
-			if ((forward() + tmp_agent->forward()).lengthSquared() < 0.2f) {
-				if ((position() - tmp_agent->position()).lengthSquared() 
-					> (position() + forward()*dt - tmp_agent->position() - tmp_agent->forward()*dt).lengthSquared()) {
-					if (id() < 100) {
-						away.z += 1.0f / 70.0f;
-					}
-					else if (id() < 200) {
-						away.z -= 1.0f / 70.0f;
-					}
-				}
-			}
+			// if ((forward() + tmp_agent->forward()).lengthSquared() < 0.2f) {
+			// 	if ((position() - tmp_agent->position()).lengthSquared() 
+			// 		> (position() + forward()*dt - tmp_agent->position() - tmp_agent->forward()*dt).lengthSquared()) {
+			// 		if (id() < 100) {
+			// 			away.z += 1.0f / 70.0f;
+			// 		}
+			// 		else if (id() < 200) {
+			// 			away.z -= 1.0f / 70.0f;
+			// 		}
+			// 	}
+			// }
 
 			// follow the leader
 			// follow anyone that is in front with a following force
