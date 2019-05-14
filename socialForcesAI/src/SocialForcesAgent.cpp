@@ -337,21 +337,31 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 
 
 	/* doorway two way */
-	float turnpoint = 1.5f;
-	if (id() == 0 && position().x < 0.3) {
-		away += Util::Vector(0, 0, -1)/410;
-	}
-	else if (id() == 1 && position().x > turnpoint) {
-		away += Util::Vector(0, 0, 1)/250;
-		away += -0.013 * forward();
-	}
-	else if (id() == 1 && position().x > 0.1f && position().x <= turnpoint) {
-		away += Util::Vector(0, 0, -1)/37;
-		away += -0.02 * forward();
-	}
+	// float turnpoint = 1.5f;
+	// if (id() == 0 && position().x < 0.3) {
+	// 	away += Util::Vector(0, 0, -1)/410;
+	// }
+	// else if (id() == 1 && position().x > turnpoint) {
+	// 	away += Util::Vector(0, 0, 1)/250;
+	// 	away += -0.013 * forward();
+	// }
+	// else if (id() == 1 && position().x > 0.1f && position().x <= turnpoint) {
+	// 	away += Util::Vector(0, 0, -1)/37;
+	// 	away += -0.02 * forward();
+	// }
 
 
 	// }
+
+
+	// if (id() < 100) {
+	// 	away.z += 1.0f / 45.0f;
+	// }
+	// else if (id() < 200) {
+	// 	away.z -= 1.0f / 45.0f;
+	// }
+	// away += -0.001f * forward();
+
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
 	{
@@ -414,6 +424,69 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// 	// }
 			// }
 			// if ( (position() - tmp_agent->position()).length() < 1.5f ) {
+
+
+
+			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
+			// if (elapsed > 400*dt && elapsed < 600*dt)
+			// 	away = away + cross(up, forward())/50;
+			// if ((forward() + tmp_agent->forward()).lengthSquared() < 0.2f) {
+			// 	// if the distance between this and tmp_agent is going to decrease in the next timestep && if the z coordinates align
+			// 	if ( (position() - tmp_agent->position()).lengthSquared() 
+			// 		> (position() + velocity()*dt - (tmp_agent->position() + tmp_agent->velocity()*dt) ).lengthSquared()
+			// 		&& 	(position().z - tmp_agent->position().z) < 0.6f) {
+			// 		// agents are_heading towards each other and are getting closer
+			// 		// check whether it's easier to dodge up or down, this might be less efficient than grouping
+			// 		// if (position().z >= tmp_agent->position().z)
+			// 		// 	away += Util::Vector(0, 0, 1) / 35;
+			// 		// else
+			// 		// 	away -= Util::Vector(0, 0, 1) / 35;
+			// 		if ()
+			// 		away -= 0.034f * forward();
+			// 	}
+			// }
+
+			// hallway-two-way
+			if ((forward() + tmp_agent->forward()).lengthSquared() < 0.2f) {
+				if ((position() - tmp_agent->position()).lengthSquared() 
+					> (position() + forward()*dt - tmp_agent->position() - tmp_agent->forward()*dt).lengthSquared()) {
+					if (id() < 100) {
+						away.z += 1.0f / 70.0f;
+					}
+					else if (id() < 200) {
+						away.z -= 1.0f / 70.0f;
+					}
+				}
+			}
+
+			// follow the leader
+			// follow anyone that is in front with a following force
+			// the following force is proportional to the z-distance (a.k.a how inline of me they are)
+			// if ((forward() - tmp_agent->forward()).lengthSquared() < 0.2f 
+			// 	&& (forward() - tmp_agent->forward()).lengthSquared() > 0.15f
+			// 	&& position().x < tmp_agent->position().x + tmp_agent->velocity().x*3*dt) {
+			// 	float cing = 1.2f*log(1 + std::abs(position().z - tmp_agent->position().z));
+			// 	if (cing < 0)
+			// 		cing = 0;
+			// 	if (cing > 0.052f)
+			// 		cing = 0.052f;
+			// 	if (position().z <= tmp_agent->position().z)
+			// 		cing *= -1;
+			// 	away.z += cing;
+			// }
+
+
+
+
+
+
+
+
+
+
+
+
+
 				away = away +
 						(
 							away_tmp
