@@ -119,6 +119,8 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 	_waypoints.clear();
 	_midTermPath.clear();
 
+	AgentGoalInfo fGoal;
+
 	Util::AxisAlignedBox oldBounds(_position.x-_radius, _position.x+_radius, 0.0f, 0.5f, _position.z-_radius, _position.z+_radius);
 	std::vector<AgentGoalInfo> goals;
 
@@ -215,14 +217,14 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 	// runLongTermPlanning(_goalQueue.front().targetLocation, dont_plan);
 
 	// pursue and evade stuff
-	if (id() == 0) {
-		pursue.x = position().x;
-		pursue.z = position().z;
-	}
-	else if (id() == 1) {
-		evade.x = position().x;
-		evade.z = position().z;
-	}
+	// if (id() == 0) {
+	// 	pursue.x = position().x;
+	// 	pursue.z = position().z;
+	// }
+	// else if (id() == 1) {
+	// 	evade.x = position().x;
+	// 	evade.z = position().z;
+	// }
 	// end of pursue and evade stuff
 
 	// std::cout << "first waypoint: " << _waypoints.front() << " agents position: " << position() << std::endl;
@@ -241,6 +243,40 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		goalDirection = normalize( _goalQueue.front().targetLocation - position());
 	}
 
+	fGoal = _goalQueue.front();
+	while (!_goalQueue.empty())
+		_goalQueue.pop();
+	// plane ingress
+	if (fGoal.targetLocation.z > 0) {
+		// left side
+		AgentGoalInfo door;
+		door.targetLocation = Util::Point(5.0f, 0, 37.5f);
+		door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+		AgentGoalInfo middle;
+		middle.targetLocation = Util::Point(-2.88f, 0, 37.5f);
+		middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+		AgentGoalInfo topOfGoal;
+		topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z - 0.265f);
+		_goalQueue.push(door);
+		_goalQueue.push(middle);
+		_goalQueue.push(topOfGoal);
+		_goalQueue.push(fGoal);
+	}
+	else {
+		// right side
+		AgentGoalInfo door;
+		door.targetLocation = Util::Point(5.0f, 0, -37.5f);
+		door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+		AgentGoalInfo middle;
+		middle.targetLocation = Util::Point(-2.88f, 0, -37.5f);
+		middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+		AgentGoalInfo topOfGoal;
+		topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z + 0.265f);
+		_goalQueue.push(door);
+		_goalQueue.push(middle);
+		_goalQueue.push(topOfGoal);
+		_goalQueue.push(fGoal);
+	}
 	_prefVelocity =
 			(
 				(
@@ -361,54 +397,55 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	// 	away.z -= 1.0f / 45.0f;
 	// }
 	// away += -0.001f * forward();
-	float beforeSquare = 1.0f / 60.0f;
-	float inSquare = 1.0f / 30.0f;
-	float afterSquare = 1.0f / 30.0f;
-	if (id() < 100) {
 
-		if (position().x < -6 && position().x > -10		&& position().z < 9) {
-			away.z += (10 - position().z) * inSquare;
-		}
-		else if (position().x < -10){
-			away.z += beforeSquare;
-		}
-		else if (position().x > 6 && position().x < 11) {
-			away.z -= afterSquare;
-		}
-	}
-	else if (id() < 200) {
-		if (position().x > 6 && position().x < 10 		&& position().z > -9) {
-			away.z -= std::abs(-10 - position().z) * inSquare;
-		}
-		else if (position().x > 10) {
-			away.z -= beforeSquare;
-		}
-		else if (position().x < -6 && position().x > -11) {
-			away.z += afterSquare;
-		}
-	}
-	else if (id() < 300) {
-		if (position().z > 6 && position().z < 10 		&& position().x < 9) {
-			away.x += (10 - position().x) * inSquare;
-		}
-		else if (position().z > 10) {
-			away.x += beforeSquare;
-		}
-		else if (position().z < -6 && position().z > -11) {
-			away.x -= beforeSquare;
-		}
-	}
-	else if (id() < 400) {
-		if (position().z < -6 && position().z > -10 	&& position().x > -9) {
-			away.x -= std::abs(-10 - position().x) * inSquare;
-		}
-		else if (position().z < -10) {
-			away.x -= beforeSquare;
-		}
-		else if (position().z > 6 && position().z < 11) {
-			away.x += beforeSquare;
-		}
-	}
+	// float beforeSquare = 1.0f / 60.0f;
+	// float inSquare = 1.0f / 30.0f;
+	// float afterSquare = 1.0f / 30.0f;
+	// if (id() < 100) {
+
+	// 	if (position().x < -6 && position().x > -10		&& position().z < 9) {
+	// 		away.z += (10 - position().z) * inSquare;
+	// 	}
+	// 	else if (position().x < -10){
+	// 		away.z += beforeSquare;
+	// 	}
+	// 	else if (position().x > 6 && position().x < 11) {
+	// 		away.z -= afterSquare;
+	// 	}
+	// }
+	// else if (id() < 200) {
+	// 	if (position().x > 6 && position().x < 10 		&& position().z > -9) {
+	// 		away.z -= std::abs(-10 - position().z) * inSquare;
+	// 	}
+	// 	else if (position().x > 10) {
+	// 		away.z -= beforeSquare;
+	// 	}
+	// 	else if (position().x < -6 && position().x > -11) {
+	// 		away.z += afterSquare;
+	// 	}
+	// }
+	// else if (id() < 300) {
+	// 	if (position().z > 6 && position().z < 10 		&& position().x < 9) {
+	// 		away.x += (10 - position().x) * inSquare;
+	// 	}
+	// 	else if (position().z > 10) {
+	// 		away.x += beforeSquare;
+	// 	}
+	// 	else if (position().z < -6 && position().z > -11) {
+	// 		away.x -= beforeSquare;
+	// 	}
+	// }
+	// else if (id() < 400) {
+	// 	if (position().z < -6 && position().z > -10 	&& position().x > -9) {
+	// 		away.x -= std::abs(-10 - position().x) * inSquare;
+	// 	}
+	// 	else if (position().z < -10) {
+	// 		away.x -= beforeSquare;
+	// 	}
+	// 	else if (position().z > 6 && position().z < 11) {
+	// 		away.x += beforeSquare;
+	// 	}
+	// }
 
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
@@ -753,7 +790,7 @@ Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 					) * tangent * tanget_v_diff
 
 				);
-				printf("collision\n");
+				// printf("collision\n");
 			}
 			else {
 				/* If a head on collision is about to happen, but hasn't happened, apply a force that pushes you to the left */
