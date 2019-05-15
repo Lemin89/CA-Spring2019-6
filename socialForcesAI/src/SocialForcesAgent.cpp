@@ -119,7 +119,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 	_waypoints.clear();
 	_midTermPath.clear();
 
-	AgentGoalInfo fGoal;
+	// AgentGoalInfo fGoal;
 
 	Util::AxisAlignedBox oldBounds(_position.x-_radius, _position.x+_radius, 0.0f, 0.5f, _position.z-_radius, _position.z+_radius);
 	std::vector<AgentGoalInfo> goals;
@@ -243,40 +243,40 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		goalDirection = normalize( _goalQueue.front().targetLocation - position());
 	}
 
-	fGoal = _goalQueue.front();
-	while (!_goalQueue.empty())
-		_goalQueue.pop();
-	// plane ingress
-	if (fGoal.targetLocation.z > 0) {
-		// left side
-		AgentGoalInfo door;
-		door.targetLocation = Util::Point(5.0f, 0, 37.5f);
-		door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
-		AgentGoalInfo middle;
-		middle.targetLocation = Util::Point(-2.88f, 0, 37.5f);
-		middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
-		AgentGoalInfo topOfGoal;
-		topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z - 0.265f);
-		_goalQueue.push(door);
-		_goalQueue.push(middle);
-		_goalQueue.push(topOfGoal);
-		_goalQueue.push(fGoal);
-	}
-	else {
-		// right side
-		AgentGoalInfo door;
-		door.targetLocation = Util::Point(5.0f, 0, -37.5f);
-		door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
-		AgentGoalInfo middle;
-		middle.targetLocation = Util::Point(-2.88f, 0, -37.5f);
-		middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
-		AgentGoalInfo topOfGoal;
-		topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z + 0.265f);
-		_goalQueue.push(door);
-		_goalQueue.push(middle);
-		_goalQueue.push(topOfGoal);
-		_goalQueue.push(fGoal);
-	}
+	// fGoal = _goalQueue.front();
+	// while (!_goalQueue.empty())
+	// 	_goalQueue.pop();
+	// // plane ingress
+	// if (fGoal.targetLocation.z > 0) {
+	// 	// left side
+	// 	AgentGoalInfo door;
+	// 	door.targetLocation = Util::Point(5.0f, 0, 37.5f);
+	// 	door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+	// 	AgentGoalInfo middle;
+	// 	middle.targetLocation = Util::Point(-2.88f, 0, 37.5f);
+	// 	middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+	// 	AgentGoalInfo topOfGoal;
+	// 	topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z - 0.265f);
+	// 	_goalQueue.push(door);
+	// 	_goalQueue.push(middle);
+	// 	_goalQueue.push(topOfGoal);
+	// 	_goalQueue.push(fGoal);
+	// }
+	// else {
+	// 	// right side
+	// 	AgentGoalInfo door;
+	// 	door.targetLocation = Util::Point(5.0f, 0, -37.5f);
+	// 	door.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+	// 	AgentGoalInfo middle;
+	// 	middle.targetLocation = Util::Point(-2.88f, 0, -37.5f);
+	// 	middle.goalType = AgentGoalTypeEnum::GOAL_TYPE_SEEK_STATIC_TARGET;
+	// 	AgentGoalInfo topOfGoal;
+	// 	topOfGoal.targetLocation = Util::Point(-2.88f, 0, fGoal.targetLocation.z + 0.265f);
+	// 	_goalQueue.push(door);
+	// 	_goalQueue.push(middle);
+	// 	_goalQueue.push(topOfGoal);
+	// 	_goalQueue.push(fGoal);
+	// }
 	_prefVelocity =
 			(
 				(
@@ -337,12 +337,12 @@ std::pair<float, Util::Point> minimum_distance(Util::Point l1, Util::Point l2, U
 Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 {
 	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
-		getSimulationEngine()->getSpatialDatabase()->getItemsInRange(_neighbors,
-				_position.x-(this->_radius + _SocialForcesParams.sf_query_radius),
-				_position.x+(this->_radius + _SocialForcesParams.sf_query_radius),
-				_position.z-(this->_radius + _SocialForcesParams.sf_query_radius),
-				_position.z+(this->_radius + _SocialForcesParams.sf_query_radius),
-				dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this));
+	getSimulationEngine()->getSpatialDatabase()->getItemsInRange(_neighbors,
+			_position.x-(this->_radius + _SocialForcesParams.sf_query_radius),
+			_position.x+(this->_radius + _SocialForcesParams.sf_query_radius),
+			_position.z-(this->_radius + _SocialForcesParams.sf_query_radius),
+			_position.z+(this->_radius + _SocialForcesParams.sf_query_radius),
+			dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this));
 
 	SteerLib::AgentInterface * tmp_agent;
 	SteerLib::ObstacleInterface * tmp_ob;
@@ -447,6 +447,13 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	// 	}
 	// }
 
+	if (position().z < -4.0f && id()) {
+		away.z += 1.0f / 40.0f;
+	}
+	else if (position().z > 4.0f && id()) {
+		away.z -= 1.0f / 40.0f;
+	}
+
 	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
 	// for (int a =0; a < tmp_agents.size(); a++)
 	{
@@ -461,6 +468,10 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 			// std::cout << "the exp of agent distance is " << exp((radius() + tmp_agent->radius()) -
 				//	(position() - tmp_agent->position()).length()) << std::endl;
 
+			if (tmp_agent->id() == 0 && tmp_agent->position().x > position().x + 1.0f) {
+				away.x -= 1.0f / 90.0f;
+				away.z -= 1.0f / 40.0f;
+			}
 
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
 			// if (elapsed > 400*dt && elapsed < 600*dt)
